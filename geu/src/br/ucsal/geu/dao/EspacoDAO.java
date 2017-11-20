@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.ucsal.geu.model.Bloco;
 import br.ucsal.geu.model.Espaco;
+import br.ucsal.geu.model.Tipo;
 import br.ucsal.util.Conexao;
 
 public class EspacoDAO {
@@ -25,16 +26,18 @@ public class EspacoDAO {
 		List<Espaco> espacos = new ArrayList<>();
 		try {
 			stmt = conexao.getConnection().createStatement();
-			ResultSet rs = stmt.executeQuery("select id,identificacao,andar,funcao,bloco_id from espacos");
+			ResultSet rs = stmt.executeQuery("select id,identificacao,bloco_id,andar,tipo_id from espacos,bloco,tipo");
 			while(rs.next()) {
 				Espaco e = new Espaco();
 				e.setId(rs.getInt("id"));
 				e.setIdentificacao(rs.getString("identificacao"));
-				e.setAndar(rs.getString("andar"));
-				e.setFuncao(rs.getString("funcao"));
 				Bloco bloco = new Bloco();
 				bloco.setId(rs.getInt("bloco_id"));
 				e.setBloco(bloco);
+				e.setAndar(rs.getString("andar"));
+				Tipo tipo = new Tipo();
+				tipo.setId(rs.getInt("tipo_id"));
+				e.setTipo(tipo);
 				espacos.add(e);
 			}
 			stmt.close();
@@ -51,22 +54,24 @@ public class EspacoDAO {
 		List<Espaco> espacos = new ArrayList<>();
 		try {
 			stmt = conexao.getConnection().createStatement();
-			ResultSet rs = stmt.executeQuery("select espacos.id,identificacao,andar,funcao,bloco_id,nome,letra,latitude,longitude from espacos,blocos where espacos.bloco_id = blocos.id;");
+			ResultSet rs = stmt.executeQuery("select espacos.id,identificacao,bloco_id,nome,letra,latitude,longitude,andar,tipo_id,tipo.nome,tipo.descricao from espacos,blocos,Tipo where espacos.bloco_id = blocos.id and espacos.tipo_id = tipo.id;");
 			while(rs.next()) {
 				Espaco e = new Espaco();
 				e.setId(rs.getInt("id"));
 				e.setIdentificacao(rs.getString("identificacao"));
-				e.setAndar(rs.getString("andar"));
-				e.setFuncao(rs.getString("funcao"));
-				
 				Bloco bloco = new Bloco();
 				bloco.setId(rs.getInt("bloco_id"));
 				bloco.setNome(rs.getString("nome"));
 				bloco.setLetra(rs.getString("letra"));
 				bloco.setLatitude(rs.getString("latitude"));
 				bloco.setLongitude(rs.getString("longitude"));
-				
 				e.setBloco(bloco);
+				e.setAndar(rs.getString("andar"));
+				Tipo tipo= new Tipo();
+				tipo.setId(rs.getInt("tipo_id"));
+				tipo.setNome(rs.getString("tipo.nome"));
+				tipo.setDescricao(rs.getString("tipo.descricao"));
+				e.setTipo(tipo);
 				espacos.add(e);
 			}
 			stmt.close();
@@ -82,11 +87,11 @@ public class EspacoDAO {
 		try {
 
 			PreparedStatement ps = conexao.getConnection()
-					.prepareStatement("insert into Espacos (identificacao,andar,funcao,bloco_id) values (?,?,?,?);");
+					.prepareStatement("insert into Espacos (identificacao,bloco_id,andar, tipo_id) values (?,?,?,?);");
 			ps.setString(1, espaco.getIdentificacao());
-			ps.setString(2, espaco.getAndar());
-			ps.setString(3, espaco.getFuncao());
-			ps.setInt(4, espaco.getBloco().getId());
+			ps.setInt(2, espaco.getBloco().getId());
+			ps.setString(3, espaco.getAndar());
+			ps.setInt(4, espaco.getTipo().getId());
 			ps.execute();
 			ps.close();
 		} catch (SQLException e) {

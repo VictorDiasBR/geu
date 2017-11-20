@@ -13,6 +13,13 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="/geu/index.jsp">Inicio</a></li>
             <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tipos<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/geu/tipo">Listar</a></li>
+                <li><a href="/geu/tipo?q=new">Novo</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Blocos <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="/geu/blocos">Listar</a></li>
